@@ -63,6 +63,7 @@ function handleArguments(env) {
   var toRun = tasks.length ? tasks : ['default'];
 
   if (versionFlag) {
+    log(slushPackage.version);
     gutil.log('CLI version', gulpPackage.version);
     if (env.modulePackage) {
       gutil.log('Local version', env.modulePackage.version);
