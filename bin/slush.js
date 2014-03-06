@@ -34,8 +34,14 @@ if (!generator) {
   process.exit(1);
 }
 
+// Setting cwd and slushfile dir:
+argv.cwd = process.cwd();
+argv.slushfile = path.join(generator.path, 'slushfile.js');
+
 var cli = new Liftoff({
-  name: 'gulp',
+  processTitle: 'slush',
+  moduleName: 'gulp',
+  configName: 'slushfile',
   completions: require('../lib/completion')
 });
 
@@ -47,7 +53,7 @@ cli.on('requireFail', function(name) {
   gutil.log(chalk.red('Failed to load external module'), chalk.magenta(name));
 });
 
-cli.launch(handleArguments);
+cli.launch(handleArguments, argv);
 
 function handleArguments(env) {
 
