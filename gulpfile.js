@@ -1,6 +1,6 @@
 'use strict';
 
-var gulp = require('./');
+var gulp = require('gulp');
 var log = require('gulp-util').log;
 
 var jshint = require('gulp-jshint');
