@@ -8,6 +8,19 @@ var semver = require('semver');
 var archy = require('archy');
 var Liftoff = require('liftoff');
 var taskTree = require('../lib/taskTree');
+var log = require('../lib/log');
+var gulpPackage = require('gulp/package');
+var slushPackage = require('../package');
+var argv = require('minimist')(process.argv.slice(2));
+var versionFlag = argv.v || argv.version;
+var generatorName = argv._.shift();
+
+if (!generatorName) {
+  if (versionFlag) {
+    log(slushPackage.version);
+  }
+  process.exit(0);
+}
 
 var cli = new Liftoff({
   name: 'gulp',
@@ -27,14 +40,12 @@ cli.launch(handleArguments);
 function handleArguments(env) {
 
   var argv = env.argv;
-  var cliPackage = require('../package');
-  var versionFlag = argv.v || argv.version;
   var tasksFlag = argv.T || argv.tasks;
   var tasks = argv._;
   var toRun = tasks.length ? tasks : ['default'];
 
   if (versionFlag) {
-    gutil.log('CLI version', cliPackage.version);
+    gutil.log('CLI version', gulpPackage.version);
     if (env.modulePackage) {
       gutil.log('Local version', env.modulePackage.version);
     }
@@ -53,9 +64,9 @@ function handleArguments(env) {
   }
 
   // check for semver difference between cli and local installation
-  if (semver.gt(cliPackage.version, env.modulePackage.version)) {
+  if (semver.gt(gulpPackage.version, env.modulePackage.version)) {
     gutil.log(chalk.red('Warning: gulp version mismatch:'));
-    gutil.log(chalk.red('Running gulp is', cliPackage.version));
+    gutil.log(chalk.red('Running gulp is', gulpPackage.version));
     gutil.log(chalk.red('Local gulp (installed in gulpfile dir) is', env.modulePackage.version));
   }
 
