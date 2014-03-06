@@ -73,27 +73,29 @@ function handleArguments(env) {
 
   if (!env.modulePath) {
     gutil.log(chalk.red('No local gulp install found in'), chalk.magenta(env.cwd));
-    gutil.log(chalk.red('Try running: npm install gulp'));
+    log(chalk.red('This is an issue with the `slush-' + generator.name + '` generator'));
     process.exit(1);
   }
 
   if (!env.configPath) {
-    gutil.log(chalk.red('No gulpfile found'));
+    log(chalk.red('No slushfile found'));
+    log(chalk.red('This is an issue with the `slush-' + generator.name + '` generator'));
     process.exit(1);
   }
 
   // check for semver difference between cli and local installation
   if (semver.gt(gulpPackage.version, env.modulePackage.version)) {
     gutil.log(chalk.red('Warning: gulp version mismatch:'));
-    gutil.log(chalk.red('Running gulp is', gulpPackage.version));
-    gutil.log(chalk.red('Local gulp (installed in gulpfile dir) is', env.modulePackage.version));
+    gutil.log(chalk.red('Running gulp from slush is', gulpPackage.version));
+    gutil.log(chalk.red('Local gulp (installed in generator dir) is', env.modulePackage.version));
+    log(chalk.red('Please upgrade `slush-' + generator.name + '`'));
   }
 
-  var gulpFile = require(env.configPath);
-  gutil.log('Using gulpfile', chalk.magenta(env.configPath));
+  require(env.configPath);
+  log('Using slushfile', chalk.magenta(env.configPath));
 
   var gulpInst = require(env.modulePath);
-  logEvents(gulpInst);
+  logEvents(generator.name, gulpInst);
 
   if (process.cwd() !== env.cwd) {
     process.chdir(env.cwd);
@@ -102,7 +104,7 @@ function handleArguments(env) {
 
   process.nextTick(function() {
     if (tasksFlag) {
-      return logTasks(gulpFile, gulpInst);
+      return logTasks(generator.name, gulpInst);
     }
     gulpInst.start.apply(gulpInst, toRun);
   });
@@ -121,9 +123,9 @@ function logGenerators(generators) {
   });
 }
 
-function logTasks(gulpFile, localGulp) {
+function logTasks(name, localGulp) {
   var tree = taskTree(localGulp.tasks);
-  tree.label = 'Tasks for ' + chalk.magenta(gulpFile);
+  tree.label = 'Tasks for generator ' + chalk.magenta(name);
   archy(tree).split('\n').forEach(function(v) {
     if (v.trim().length === 0) return;
     gutil.log(v);
@@ -138,25 +140,24 @@ function formatError(e) {
 }
 
 // wire up logging events
-function logEvents(gulpInst) {
+function logEvents(name, gulpInst) {
   gulpInst.on('task_start', function(e) {
-    gutil.log('Starting', "'" + chalk.cyan(e.task) + "'...");
+    gutil.log('Starting', "'" + chalk.cyan(name + ':' + e.task) + "'...");
   });
 
   gulpInst.on('task_stop', function(e) {
     var time = prettyTime(e.hrDuration);
-    gutil.log('Finished', "'" + chalk.cyan(e.task) + "'", 'after', chalk.magenta(time));
+    gutil.log('Finished', "'" + chalk.cyan(name + ':' + e.task) + "'", 'after', chalk.magenta(time));
   });
 
   gulpInst.on('task_err', function(e) {
     var msg = formatError(e);
     var time = prettyTime(e.hrDuration);
-    gutil.log("'" + chalk.cyan(e.task) + "'", 'errored after', chalk.magenta(time), chalk.red(msg));
+    gutil.log("'" + chalk.cyan(name + ':' + e.task) + "'", 'errored after', chalk.magenta(time), chalk.red(msg));
   });
 
   gulpInst.on('task_not_found', function(err) {
-    gutil.log(chalk.red("Task '" + err.task + "' was not defined in your gulpfile but you tried to run it."));
-    gutil.log('Please check the documentation for proper gulpfile formatting.');
+    log(chalk.red("Task '" + err.task + "' was not defined in `slush-" + name + "` but you tried to run it."));
     process.exit(1);
   });
 }
