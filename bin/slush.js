@@ -21,9 +21,17 @@ if (!generatorName) {
   if (versionFlag) {
     log(slushPackage.version);
   } else {
-    logGenerators(findGenerators(require.main.paths));
+    logGenerators(getAllGenerators());
   }
   process.exit(0);
+}
+
+var generator = getGenerator(generatorName);
+
+if (!generator) {
+  log(chalk.red('No generator by name: "' + generatorName + '" was found!'));
+  log(chalk.red('Try installing it with `npm install -g slush-' + generatorName + '` first.'));
+  process.exit(1);
 }
 
 var cli = new Liftoff({
@@ -144,6 +152,16 @@ function logEvents(gulpInst) {
     gutil.log('Please check the documentation for proper gulpfile formatting.');
     process.exit(1);
   });
+}
+
+function getGenerator (name) {
+  return getAllGenerators().filter(function (gen) {
+    return gen.name === name;
+  })[0];
+}
+
+function getAllGenerators () {
+  return findGenerators(require.main.paths);
 }
 
 function findGenerators (searchpaths) {
