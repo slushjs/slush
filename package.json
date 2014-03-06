@@ -1,36 +1,36 @@
 {
-  "name": "gulp",
-  "description": "The streaming build system",
-  "version": "3.5.5",
-  "homepage": "http://gulpjs.com",
-  "repository": "gulpjs/gulp",
-  "author": "Fractal <contact@wearefractal.com> (http://wearefractal.com/)",
+  "name": "slush",
+  "description": "The streaming scaffolding system - Gulp as a replacement for Yeoman",
+  "version": "0.1.0",
+  "homepage": "http://github.com/klei/slush",
+  "repository": "klei/slush",
+  "author": "Joakim Bengtson <joakim@klei.se>",
+  "preferGlobal": true,
   "tags": [
-    "build",
+    "scaffold",
     "stream",
-    "system",
-    "make",
+    "project",
+    "init",
     "tool",
-    "asset",
-    "pipeline"
+    "yeoman",
+    "gulp"
   ],
   "files": [
-    "index.js",
     "lib",
     "bin"
   ],
   "bin": {
-    "gulp": "./bin/gulp.js"
+    "slush": "./bin/slush.js"
   },
   "dependencies": {
+    "glob": "~2.3.9",
+    "minimist": "~0.0.8",
     "gulp-util": "^2.2.0",
-    "orchestrator": "^0.3.0",
     "pretty-hrtime": "^0.2.0",
-    "vinyl-fs": "^0.1.0",
     "semver": "^2.2.1",
     "archy": "^0.0.2",
     "deprecated": "^0.0.1",
-    "liftoff": "^0.9.3",
+    "liftoff": "^0.9.6",
     "chalk": "^0.4.0"
   },
   "devDependencies": {
@@ -57,7 +57,7 @@
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://raw.github.com/gulpjs/gulp/master/LICENSE"
+      "url": "https://raw.github.com/klei/slush/master/LICENSE"
     }
   ]
 }
