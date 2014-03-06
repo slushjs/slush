@@ -10,11 +10,13 @@ var semver = require('semver');
 var archy = require('archy');
 var Liftoff = require('liftoff');
 var taskTree = require('../lib/taskTree');
+var install = require('../lib/install');
 var log = require('../lib/log');
 var gulpPackage = require('gulp/package');
 var slushPackage = require('../package');
 var argv = require('minimist')(process.argv.slice(2));
 var versionFlag = argv.v || argv.version;
+var skipInstallFlag = argv.S || argv['skip-install'];
 var generatorName = argv._.shift();
 
 if (!generatorName) {
@@ -159,6 +161,15 @@ function logEvents(name, gulpInst) {
   gulpInst.on('task_not_found', function(err) {
     log(chalk.red("Task '" + err.task + "' was not defined in `slush-" + name + "` but you tried to run it."));
     process.exit(1);
+  });
+
+  gulpInst.on('stop', function () {
+    log('Scaffolding done');
+    if (!skipInstallFlag) {
+      install();
+    } else if (install.getCommand()) {
+      log('Skipping install.', "Run '" + chalk.yellow(install.getCommand()) + "' manually");
+    }
   });
 }
 
