@@ -3,6 +3,8 @@
 'use strict';
 var gutil = require('gulp-util');
 var prettyTime = require('pretty-hrtime');
+var glob = require('glob');
+var path = require('path');
 var chalk = require('chalk');
 var semver = require('semver');
 var archy = require('archy');
@@ -18,6 +20,8 @@ var generatorName = argv._.shift();
 if (!generatorName) {
   if (versionFlag) {
     log(slushPackage.version);
+  } else {
+    logGenerators(findGenerators(require.main.paths));
   }
   process.exit(0);
 }
@@ -89,6 +93,19 @@ function handleArguments(env) {
   });
 }
 
+function logGenerators(generators) {
+  var tree = {
+    label: 'Installed generators',
+    nodes: generators.map(function (gen) {
+      return {label: gen.name};
+    })
+  };
+  archy(tree).split('\n').forEach(function(v) {
+    if (v.trim().length === 0) return;
+    log(v);
+  });
+}
+
 function logTasks(gulpFile, localGulp) {
   var tree = taskTree(localGulp.tasks);
   tree.label = 'Tasks for ' + chalk.magenta(gulpFile);
@@ -127,4 +144,12 @@ function logEvents(gulpInst) {
     gutil.log('Please check the documentation for proper gulpfile formatting.');
     process.exit(1);
   });
+}
+
+function findGenerators (searchpaths) {
+  return searchpaths.reduce(function (arr, searchpath) {
+    return arr.concat(glob.sync('slush-*', {cwd: searchpath, stat: true}).map(function (match) {
+      return {path: path.join(searchpath, match), name: match.slice(6)};
+    }));
+  }, []);
 }
