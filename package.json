@@ -48,8 +48,7 @@
     "mkdirp": "^0.3.5"
   },
   "scripts": {
-    "test": "node gulpfile.js && mocha --reporter spec",
-    "coveralls": "istanbul cover _mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage"
+    "test": "node gulpfile.js && mocha --reporter spec"
   },
   "engineStrict": true,
   "engines": {
