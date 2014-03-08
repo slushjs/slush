@@ -6,12 +6,10 @@ var prettyTime = require('pretty-hrtime');
 var glob = require('glob');
 var path = require('path');
 var chalk = require('chalk');
-var semver = require('semver');
 var archy = require('archy');
 var Liftoff = require('liftoff');
 var taskTree = require('../lib/taskTree');
 var log = require('../lib/log');
-var gulpPackage = require('gulp/package');
 var slushPackage = require('../package');
 var argv = require('minimist')(process.argv.slice(2));
 var versionFlag = argv.v || argv.version;
@@ -64,9 +62,8 @@ function handleArguments(env) {
 
   if (versionFlag) {
     log(slushPackage.version);
-    gutil.log('CLI version', gulpPackage.version);
     if (env.modulePackage) {
-      gutil.log('Local version', env.modulePackage.version);
+      gutil.log('Generator version', env.modulePackage.version);
     }
     process.exit(0);
   }
@@ -81,14 +78,6 @@ function handleArguments(env) {
     log(chalk.red('No slushfile found'));
     log(chalk.red('This is an issue with the `slush-' + generator.name + '` generator'));
     process.exit(1);
-  }
-
-  // check for semver difference between cli and local installation
-  if (semver.gt(gulpPackage.version, env.modulePackage.version)) {
-    gutil.log(chalk.red('Warning: gulp version mismatch:'));
-    gutil.log(chalk.red('Running gulp from slush is', gulpPackage.version));
-    gutil.log(chalk.red('Local gulp (installed in generator dir) is', env.modulePackage.version));
-    log(chalk.red('Please upgrade `slush-' + generator.name + '`'));
   }
 
   require(env.configPath);
