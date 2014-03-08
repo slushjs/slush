@@ -10,13 +10,11 @@ var semver = require('semver');
 var archy = require('archy');
 var Liftoff = require('liftoff');
 var taskTree = require('../lib/taskTree');
-var install = require('../lib/install');
 var log = require('../lib/log');
 var gulpPackage = require('gulp/package');
 var slushPackage = require('../package');
 var argv = require('minimist')(process.argv.slice(2));
 var versionFlag = argv.v || argv.version;
-var skipInstallFlag = argv.S || argv['skip-install'];
 var generatorName = argv._.shift();
 
 if (!generatorName) {
@@ -43,8 +41,8 @@ argv.slushfile = path.join(generator.path, 'slushfile.js');
 var cli = new Liftoff({
   processTitle: 'slush',
   moduleName: 'gulp',
-  configName: 'slushfile',
-  completions: require('../lib/completion')
+  configName: 'slushfile'
+  // completions: require('../lib/completion') FIXME
 });
 
 cli.on('require', function(name) {
@@ -165,11 +163,6 @@ function logEvents(name, gulpInst) {
 
   gulpInst.on('stop', function () {
     log('Scaffolding done');
-    if (!skipInstallFlag) {
-      install();
-    } else if (install.getCommand()) {
-      log('Skipping install.', "Run '" + chalk.yellow(install.getCommand()) + "' manually");
-    }
   });
 }
 
