@@ -1,86 +1,132 @@
-<p align="center">
-  <a href="http://gulpjs.com">
-    <img height="194" width="98" src="https://raw.github.com/gulpjs/artwork/master/gulp.png"/>
-  </a>
-</p>
+# slush [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coveralls Status][coveralls-image]][coveralls-url] [![Dependency Status][daviddm-url]][daviddm-image]
+> The streaming scaffolding system - Gulp as a replacement for Yeoman
 
-# gulp [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coveralls Status][coveralls-image]][coveralls-url] [![Dependency Status][daviddm-url]][daviddm-image]
-> The streaming build system
+## Use Gulp instead of Yeoman
 
-## Like what we do?
+Slush is a tool to be able to use Gulp for project scaffolding.
 
-[Support us via gittip](https://www.gittip.com/WeAreFractal/)
+Slush does not contain anything "out of the box", except the ability to locate installed slush generators
+and to run them with [`liftoff`](https://www.npmjs.org/package/liftoff).
+
+To be able to provide functionality like Yeoman, see: [Yeoman like behavior](#yeoman-like-behavior) below.
+
+## Install
+
+Install `slush` globally with:
+
+```bash
+npm install -g slush
+```
+
+## Usage
+
+```bash
+slush <generator>[ <tasks>]
+```
+
+**Note** if `<tasks>` is not provided it will default to the `default` task in the generator's slushfile.
+
+### List available generators
+
+```bash
+slush
+```
+
+### List available tasks in generator
+
+```bash
+slush <generator> --tasks
+```
+
+## Creating a generator
+
+A Slush generator is an npm package following the naming convention `slush-*` and containing a `slushfile.js`.
+
+Add `slushgenerator` as a keyword in your `package.json`.
+
+As when building gulp plugins all slush generators need to have `gulp` installed as a local dependency.
+
+All `slush-*` packages should be installed globally (for now) to be found by the slush executable.
+
+**Note** remember to add gulp plugins (and gulp itself) as ordinary dependencies, instead of devDependencies, when building a slush generator.
+
 
 ## Documentation
 
-For a Getting started guide, API docs, recipes, making a plugin, etc. see the [documentation page](/docs/README.md)!
+### Things to remember
 
-## Sample gulpfile
+* Install `slush` globally
+* Install slush generators globally
+* When creating slush generators:
+   - name them `slush-<name>`
+   - add `slushgenerator` as package keyword
+   - create a slushfile.js
+   - Install `gulp` and used gulp plugins for your generator as ordinary dependencies
 
-This file is just a quick sample to give you a taste of what gulp does.
+### Slush uses gulp
+
+Slush is just the global excutable to trigger slush generators, under the hood it's still gulp that is run using each slushfile as config file.
+
+Needing help writing slush generators? Check out [Gulp's documentation](https://github.com/gulpjs/gulp/blob/master/docs/README.md)!
+
+### The slushfile
+
+A slushfile is basically a gulpfile, but meant to be used to scaffold project structures.
+
+#### Why not name it "gulpfile" then?
+
+Because a Slush generator may want to use gulp locally for linting, testing and other purposes, in which case it will need to have a gulpfile.
+
+#### Sample slushfile
+
+Given a slush generator project structure with a web app project template inside `./templates/app/`, a slushfile could be designed like this:
 
 ```javascript
-var gulp = require('gulp');
+var gulp = require('gulp'),
+    install = require('gulp-install'),
+    conflict = require('gulp-conflict'),
+    template = require('gulp-template'),
+    inquirer = require('inquirer');
 
-var coffee = require('gulp-coffee');
-var concat = require('gulp-concat');
-var uglify = require('gulp-uglify');
-var imagemin = require('gulp-imagemin');
-
-var paths = {
-  scripts: ['client/js/**/*.coffee', '!client/external/**/*.coffee'],
-  images: 'client/img/**/*'
-};
-
-gulp.task('scripts', function() {
-  // Minify and copy all JavaScript (except vendor scripts)
-  return gulp.src(paths.scripts)
-    .pipe(coffee())
-    .pipe(uglify())
-    .pipe(concat('all.min.js'))
-    .pipe(gulp.dest('build/js'));
+gulp.task('default', function (done) {
+  inquirer.prompt([
+    {type: 'confirm', name: 'app', message: 'Create a new app?'},
+    {type: 'confirm', name: 'another', message: 'Something else?'}
+  ],
+  function (answers) {
+    if (!answers.app) {
+      return done();
+    }
+    gulp.src(__dirname + '/templates/app/**')  // Note use of __dirname to be relative to generator
+      .pipe(template(answers))                 // Lodash template support
+      .pipe(conflict('./'))                    // Confirms overwrites on file conflicts
+      .pipe(gulp.dest('./'))                   // Without __dirname here = relative to cwd
+      .pipe(install())                         // Run `bower install` and/or `npm install` if necessary
+      .on('end', function () {
+        done();                                // Finished!
+      });
+  });
 });
-
-// Copy all static images
-gulp.task('images', function() {
- return gulp.src(paths.images)
-    // Pass in options to the task
-    .pipe(imagemin({optimizationLevel: 5}))
-    .pipe(gulp.dest('build/img'));
-});
-
-// Rerun the task when a file changes
-gulp.task('watch', function() {
-  gulp.watch(paths.scripts, ['scripts']);
-  gulp.watch(paths.images, ['images']);
-});
-
-// The default task (called when you run `gulp` from cli)
-gulp.task('default', ['scripts', 'images', 'watch']);
-
 ```
 
-## Incremental Builds
+## Yeoman like behavior
 
-We recommend these plugins:
+Use these packages/plugins:
 
-- [gulp-changed](https://github.com/sindresorhus/gulp-changed)
-- [gulp-cached](https://github.com/wearefractal/gulp-cached)
+- [inquirer](https://github.com/SBoudrias/Inquirer.js) - To prompt the user for input
+- [gulp-install](https://github.com/klei/gulp-install) - To install npm and bower packages after scaffolding
+- [gulp-conflict](https://github.com/klei/gulp-conflict) - To prompt before overwriting files on regeneration
 
 ## Want to contribute?
 
-Anyone can help make this project better - check out the [Contributing guide](/CONTRIBUTING.md)!
+Anyone can help make this project better!
 
 
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/wearefractal/gulp/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
-[npm-url]: https://npmjs.org/package/gulp
-[npm-image]: https://badge.fury.io/js/gulp.png
-[travis-url]: https://travis-ci.org/gulpjs/gulp
-[travis-image]: https://travis-ci.org/gulpjs/gulp.png?branch=master
-[coveralls-url]: https://coveralls.io/r/gulpjs/gulp
-[coveralls-image]: https://coveralls.io/repos/gulpjs/gulp/badge.png
-[depstat-url]: https://david-dm.org/gulpjs/gulp
-[depstat-image]: https://david-dm.org/gulpjs/gulp.png
-[daviddm-url]: https://david-dm.org/gulpjs/gulp.png?theme=shields.io
-[daviddm-image]: https://david-dm.org/gulpjs/gulp
+[npm-url]: https://npmjs.org/package/slush
+[npm-image]: https://badge.fury.io/js/slush.png
+[travis-url]: https://travis-ci.org/klei/slush
+[travis-image]: https://travis-ci.org/klei/slush.png?branch=master
+[depstat-url]: https://david-dm.org/klei/slush
+[depstat-image]: https://david-dm.org/klei/slush.png
+[daviddm-url]: https://david-dm.org/klei/slush.png?theme=shields.io
+[daviddm-image]: https://david-dm.org/klei/slush
