@@ -1,12 +1,12 @@
-# Completion for gulp
+# Completion for slush
 > Thanks to grunt team and Tyler Kellen
 
-To enable tasks auto-completion in shell you should add `eval "$(gulp --completion=shell)"` in your `.shellrc` file.
+To enable tasks auto-completion in shell you should add `eval "$(slush --completion=shell)"` in your `.shellrc` file.
 
 ## Bash
 
-Add `eval "$(gulp --completion=bash)"` to `~/.bashrc`.
+Add `eval "$(slush --completion=bash)"` to `~/.bashrc`.
 
 ## Zsh
 
-Add `eval "$(gulp --completion=zsh)"` to `~/.zshrc`.
+Add `eval "$(slush --completion=zsh)"` to `~/.zshrc`.

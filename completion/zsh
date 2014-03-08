@@ -15,13 +15,13 @@
 # eval "$(gulp --completion=zsh)"
 
 # Enable zsh autocompletion.
-function _gulp_completion() {
+function _slush_completion() {
   # Grap tasks
-  compls=$(node -e "try { var gulp = require('gulp'); require('./gulpfile'); console.log(Object.keys(gulp.tasks).join(' ')); } catch (e) {}")
+  compls=$(node -e "try { var gulp = require('gulp'); require('./slushfile'); console.log(Object.keys(gulp.tasks).join(' ')); } catch (e) {}")
   # Trim whitespace.
   compls=$(echo "$compls" | sed -e 's/^ *//g' -e 's/ *$//g')
   completions=(${=compls})
   compadd -- $completions
 }
 
-compdef _gulp_completion gulp
+compdef _slush_completion slush
