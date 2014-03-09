@@ -162,7 +162,7 @@ function getGenerator (name) {
 }
 
 function getAllGenerators () {
-  return findGenerators(require.main.paths);
+  return findGenerators(process.env.NODE_ENV === 'test' ? [path.join(__dirname, '..', 'test')] : require.main.paths);
 }
 
 function findGenerators (searchpaths) {
