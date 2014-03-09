@@ -69,7 +69,7 @@ function handleArguments(env) {
   }
 
   if (!env.modulePath) {
-    gutil.log(chalk.red('No local gulp install found in'), chalk.magenta(env.cwd));
+    gutil.log(chalk.red('No local gulp install found in'), chalk.magenta(generator.path));
     log(chalk.red('This is an issue with the `slush-' + generator.name + '` generator'));
     process.exit(1);
   }
