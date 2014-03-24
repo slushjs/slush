@@ -1,4 +1,4 @@
-# slush [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coveralls Status][coveralls-image]][coveralls-url] [![Dependency Status][daviddm-url]][daviddm-image]
+# slush [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-url]][daviddm-image]
 > The streaming scaffolding system - Gulp as a replacement for Yeoman
 
 ## Use Gulp instead of Yeoman
