@@ -35,7 +35,8 @@
     "mocha": "^1.17.0",
     "should": "^3.1.0",
     "jshint": "^2.4.1",
-    "gulp-jshint": "^1.4.0"
+    "gulp-jshint": "^1.4.0",
+    "gulp": "~3.5.6"
   },
   "scripts": {
     "test": "node gulpfile.js && NODE_ENV=test mocha --reporter spec"
