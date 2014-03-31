@@ -6,5 +6,5 @@ gulp.task('default', function () {
 });
 
 gulp.task('app', function () {
-  console.log('app');
+  console.log('app' + (this.args.length ? ' (' + this.args.join(', ') + ')' : ''));
 });

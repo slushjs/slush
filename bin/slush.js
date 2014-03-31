@@ -13,7 +13,9 @@ var log = require('../lib/log');
 var slushPackage = require('../package');
 var argv = require('minimist')(process.argv.slice(2));
 var versionFlag = argv.v || argv.version;
-var generatorName = argv._.shift();
+var params = argv._.slice();
+var generatorAndTasks = params.length ? params.shift().split(':') : [];
+var generatorName = generatorAndTasks.shift();
 
 if (!generatorName) {
   if (versionFlag) {
@@ -35,6 +37,7 @@ if (!generator) {
 // Setting cwd and slushfile dir:
 argv.cwd = process.cwd();
 argv.slushfile = path.join(generator.path, 'slushfile.js');
+argv._ = generatorAndTasks;
 
 var cli = new Liftoff({
   processTitle: 'slush',
@@ -59,11 +62,15 @@ function handleArguments(env) {
   var tasksFlag = argv.T || argv.tasks;
   var tasks = argv._;
   var toRun = tasks.length ? tasks : ['default'];
+  var args = params;
 
   if (versionFlag) {
     log(slushPackage.version);
     if (env.modulePackage) {
-      gutil.log('Generator version', env.modulePackage.version);
+      gutil.log(env.modulePackage.version);
+    }
+    if (generator.pkg.version) {
+      console.log('[' + chalk.green('slush-' + generator.name) + '] ' + generator.pkg.version);
     }
     process.exit(0);
   }
@@ -84,6 +91,7 @@ function handleArguments(env) {
   log('Using slushfile', chalk.magenta(env.configPath));
 
   var gulpInst = require(env.modulePath);
+  gulpInst.args = args;
   logEvents(generator.name, gulpInst);
 
   if (process.cwd() !== env.cwd) {
@@ -103,7 +111,7 @@ function logGenerators(generators) {
   var tree = {
     label: 'Installed generators',
     nodes: generators.map(function (gen) {
-      return {label: gen.name};
+      return {label: gen.name + (gen.pkg.version ? chalk.grey(' (' + gen.pkg.version + ')') : '')};
     })
   };
   archy(tree).split('\n').forEach(function(v) {
@@ -162,13 +170,33 @@ function getGenerator (name) {
 }
 
 function getAllGenerators () {
-  return findGenerators(process.env.NODE_ENV === 'test' ? [path.join(__dirname, '..', 'test')] : require.main.paths);
+  return findGenerators(getModulesPaths());
+}
+
+function getModulesPaths () {
+  if (process.env.NODE_ENV === 'test') {
+    return [path.join(__dirname, '..', 'test')];
+  }
+  var paths = [];
+  if (process.platform === 'win32') {
+    paths.push(path.join(process.env.APPDATA, 'npm', 'node_modules'));
+  } else {
+    paths.push('/usr/lib/node_modules');
+  }
+  paths.push(path.join(__dirname, '..', '..'));
+  paths.push.apply(paths, require.main.paths);
+  return paths;
 }
 
 function findGenerators (searchpaths) {
   return searchpaths.reduce(function (arr, searchpath) {
     return arr.concat(glob.sync('slush-*', {cwd: searchpath, stat: true}).map(function (match) {
-      return {path: path.join(searchpath, match), name: match.slice(6)};
+      var generator = {path: path.join(searchpath, match), name: match.slice(6), pkg: {}};
+      try {
+        generator.pkg = require(path.join(searchpath, match, 'package.json'));
+      } catch (e) {
+      }
+      return generator;
     }));
   }, []);
 }

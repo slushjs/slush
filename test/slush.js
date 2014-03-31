@@ -45,7 +45,7 @@ describe('slush', function () {
   });
 
   it('should run provided task in generator', function (done) {
-    var slush = runSlush(['test', 'app']);
+    var slush = runSlush(['test:app']);
     var data = '';
     slush.stdout.on('data', function (chunk) {
       data += chunk;
@@ -57,8 +57,21 @@ describe('slush', function () {
     });
   });
 
+  it('should run provided task with arguments in generator', function (done) {
+    var slush = runSlush(['test:app', 'arg1', 'arg2']);
+    var data = '';
+    slush.stdout.on('data', function (chunk) {
+      data += chunk;
+    });
+    slush.on('close', function (code) {
+      code.should.equal(0);
+      data.should.match(/\napp \(arg1, arg2\)\n/);
+      done();
+    });
+  });
+
   it('should fail when running a non-existing task in a generator', function (done) {
-    var slush = runSlush(['test', 'noexist']);
+    var slush = runSlush(['test:noexist']);
     var data = '';
     slush.stdout.on('data', function (chunk) {
       data += chunk;
