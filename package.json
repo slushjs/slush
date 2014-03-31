@@ -1,8 +1,8 @@
 {
   "name": "slush",
   "description": "The streaming scaffolding system - Gulp as a replacement for Yeoman",
-  "version": "0.1.0",
-  "homepage": "http://github.com/klei/slush",
+  "version": "1.0.0",
+  "homepage": "http://klei.github.io/slush",
   "repository": "klei/slush",
   "author": "Joakim Bengtson <joakim@klei.se>",
   "preferGlobal": true,

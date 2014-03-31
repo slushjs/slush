@@ -21,12 +21,23 @@ npm install -g slush
 ## Usage
 
 ```bash
-slush <generator>[ <tasks>]
+slush <generator>[:<tasks>] [<args>]
 ```
 
-**Note** if `<tasks>` is not provided it will default to the `default` task in the generator's slushfile.
+* `<tasks>`: a colon (":") separated list of a task or tasks to run. If not provided the `default` task in the slushfile is run
+* `<args>`: any other given arguments (not prefixed with "--" or "-") can be accessed via the `gulp.args` property from within a slushfile
+
+**Example:**
+
+```bash
+slush angular:component myNewComponent
+```
+
+Which will run task `component` in generator `slush-angular` and `gulp.args` will be set to `["myNewComponent"]`.
 
 ### List available generators
+
+If run without any arguments, slush will list all installed generators.
 
 ```bash
 slush
@@ -34,9 +45,27 @@ slush
 
 ### List available tasks in generator
 
+To list available tasks within a generator, use the generator name in conjunction with the `--tasks` parameter.
+
 ```bash
 slush <generator> --tasks
 ```
+
+### Print version(s)
+
+As usual you can use `-v` or `--version` to get current slush version:
+
+```bash
+slush -v
+```
+
+It can also be used together with a generator name:
+
+```bash
+slush <generator> -v
+```
+
+You'll then get the version for slush, the gulp version installed in the generator and the version number of the given generator.
 
 ## Creating a generator
 
@@ -90,11 +119,11 @@ var gulp = require('gulp'),
 
 gulp.task('default', function (done) {
   inquirer.prompt([
-    {type: 'confirm', name: 'app', message: 'Create a new app?'},
-    {type: 'confirm', name: 'another', message: 'Something else?'}
+    {type: 'input', name: 'name', message: 'Give your app a name', default: gulp.args.join(' ')}, // Get app name from arguments by default
+    {type: 'confirm', name: 'moveon', message: 'Continue?'}
   ],
   function (answers) {
-    if (!answers.app) {
+    if (!answers.moveon) {
       return done();
     }
     gulp.src(__dirname + '/templates/app/**')  // Note use of __dirname to be relative to generator
