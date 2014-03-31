@@ -6,7 +6,7 @@
   "repository": "klei/slush",
   "author": "Joakim Bengtson <joakim@klei.se>",
   "preferGlobal": true,
-  "tags": [
+  "keywords": [
     "scaffold",
     "stream",
     "project",
