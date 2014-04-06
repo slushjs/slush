@@ -152,10 +152,10 @@ Anyone can help make this project better!
 
 
 [npm-url]: https://npmjs.org/package/slush
-[npm-image]: https://badge.fury.io/js/slush.png
+[npm-image]: https://badge.fury.io/js/slush.svg
 [travis-url]: https://travis-ci.org/klei/slush
-[travis-image]: https://travis-ci.org/klei/slush.png?branch=master
+[travis-image]: https://travis-ci.org/klei/slush.svg?branch=master
 [depstat-url]: https://david-dm.org/klei/slush
-[depstat-image]: https://david-dm.org/klei/slush.png
-[daviddm-url]: https://david-dm.org/klei/slush.png?theme=shields.io
+[depstat-image]: https://david-dm.org/klei/slush.svg
+[daviddm-url]: https://david-dm.org/klei/slush.svg?theme=shields.io
 [daviddm-image]: https://david-dm.org/klei/slush
