@@ -177,7 +177,7 @@ function getModulesPaths () {
   if (process.env.NODE_ENV === 'test') {
     return [path.join(__dirname, '..', 'test')];
   }
-  var paths = [];
+  var paths = [path.join(process.cwd(), 'node_modules')];
   if (process.platform === 'win32') {
     paths.push(path.join(process.env.APPDATA, 'npm', 'node_modules'));
   } else {
