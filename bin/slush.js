@@ -185,7 +185,11 @@ function getModulesPaths () {
   }
   paths.push(path.join(__dirname, '..', '..'));
   paths.push.apply(paths, require.main.paths);
-  return paths;
+  return paths.map(function(path){
+    return path.toLowerCase();
+  }).filter(function(path, index, all){
+    return all.lastIndexOf(path) === index;
+  });
 }
 
 function findGenerators (searchpaths) {
