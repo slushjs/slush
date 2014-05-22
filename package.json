@@ -1,9 +1,9 @@
 {
   "name": "slush",
   "description": "The streaming scaffolding system - Gulp as a replacement for Yeoman",
-  "version": "1.0.0",
-  "homepage": "http://klei.github.io/slush",
-  "repository": "klei/slush",
+  "version": "1.0.1",
+  "homepage": "http://slushjs.github.io",
+  "repository": "slushjs/slush",
   "author": "Joakim Bengtson <joakim@klei.se>",
   "preferGlobal": true,
   "keywords": [
@@ -23,12 +23,12 @@
     "slush": "./bin/slush.js"
   },
   "dependencies": {
-    "glob": "~3.2.9",
-    "minimist": "~0.0.8",
+    "glob": "~4.0.0",
+    "minimist": "~0.1.0",
     "gulp-util": "^2.2.0",
     "pretty-hrtime": "^0.2.0",
     "archy": "^0.0.2",
-    "liftoff": "^0.9.6",
+    "liftoff": "~0.10.0",
     "chalk": "^0.4.0"
   },
   "devDependencies": {
@@ -36,7 +36,7 @@
     "should": "^3.1.0",
     "jshint": "^2.4.1",
     "gulp-jshint": "^1.4.0",
-    "gulp": "~3.5.6"
+    "gulp": "~3.6.2"
   },
   "scripts": {
     "test": "node gulpfile.js && NODE_ENV=test mocha --reporter spec"
@@ -48,7 +48,7 @@
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://raw.github.com/klei/slush/master/LICENSE"
+      "url": "https://raw.github.com/slushjs/slush/master/LICENSE"
     }
   ]
 }

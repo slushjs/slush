@@ -143,8 +143,8 @@ gulp.task('default', function (done) {
 Use these packages/plugins:
 
 - [inquirer](https://github.com/SBoudrias/Inquirer.js) - To prompt the user for input
-- [gulp-install](https://github.com/klei/gulp-install) - To install npm and bower packages after scaffolding
-- [gulp-conflict](https://github.com/klei/gulp-conflict) - To prompt before overwriting files on regeneration
+- [gulp-install](https://github.com/slushjs/gulp-install) - To install npm and bower packages after scaffolding
+- [gulp-conflict](https://github.com/slushjs/gulp-conflict) - To prompt before overwriting files on regeneration
 
 ## Want to contribute?
 
@@ -153,9 +153,9 @@ Anyone can help make this project better!
 
 [npm-url]: https://npmjs.org/package/slush
 [npm-image]: https://badge.fury.io/js/slush.svg
-[travis-url]: https://travis-ci.org/klei/slush
-[travis-image]: https://travis-ci.org/klei/slush.svg?branch=master
-[depstat-url]: https://david-dm.org/klei/slush
-[depstat-image]: https://david-dm.org/klei/slush.svg
-[daviddm-url]: https://david-dm.org/klei/slush.svg?theme=shields.io
-[daviddm-image]: https://david-dm.org/klei/slush
+[travis-url]: https://travis-ci.org/slushjs/slush
+[travis-image]: https://travis-ci.org/slushjs/slush.svg?branch=master
+[depstat-url]: https://david-dm.org/slushjs/slush
+[depstat-image]: https://david-dm.org/slushjs/slush.svg
+[daviddm-url]: https://david-dm.org/slushjs/slush.svg?theme=shields.io
+[daviddm-image]: https://david-dm.org/slushjs/slush
