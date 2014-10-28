@@ -53,7 +53,7 @@ slush <generator> --tasks
 
 ### Print version(s)
 
-As usual you can use `-v` or `--version` to get current slush version:
+As usual you can use `-v` or `--version` to get the current slush version:
 
 ```bash
 slush -v
