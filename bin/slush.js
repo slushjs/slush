@@ -184,6 +184,9 @@ function getModulesPaths () {
     paths.push('/usr/lib/node_modules');
   }
   paths.push(path.join(__dirname, '..', '..'));
+  // require.main points to the main module being ran (in this case slush).  Module.paths
+  //   is an undocumented array of strings that hold each directory starting from the current
+  //   module directory all the way down to root.
   paths.push.apply(paths, require.main.paths);
   return paths.map(function(path){
     return path.toLowerCase();
