@@ -25,8 +25,8 @@ describe('slush', function () {
     });
     slush.on('close', function (code) {
       code.should.equal(0);
-      data.should.match(/\[gulp\] ├── default/);
-      data.should.match(/\[gulp\] └── app/);
+      data.should.match(/├── default/);
+      data.should.match(/└── app/);
       done();
     });
   });
