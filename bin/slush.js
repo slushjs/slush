@@ -177,12 +177,19 @@ function getModulesPaths () {
   if (process.env.NODE_ENV === 'test') {
     return [path.join(__dirname, '..', 'test')];
   }
+  var sep = (process.platform === 'win32') ? ';' : ':';
   var paths = [];
-  if (process.platform === 'win32') {
-    paths.push(path.join(process.env.APPDATA, 'npm', 'node_modules'));
+
+  if (process.env.NODE_PATH) {
+    paths = paths.concat(process.env.NODE_PATH.split(sep));
   } else {
-    paths.push('/usr/lib/node_modules');
+    if (process.platform === 'win32') {
+      paths.push(path.join(process.env.APPDATA, 'npm', 'node_modules'));
+    } else {
+      paths.push('/usr/lib/node_modules');
+    }
   }
+
   paths.push(path.join(__dirname, '..', '..'));
   paths.push.apply(paths, require.main.paths);
   return paths.map(function(path){
