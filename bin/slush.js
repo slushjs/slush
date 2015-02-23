@@ -199,8 +199,8 @@ function getModulesPaths () {
 
 function findGenerators (searchpaths) {
   return searchpaths.reduce(function (arr, searchpath) {
-    return arr.concat(glob.sync('slush-*', {cwd: searchpath, stat: true}).map(function (match) {
-      var generator = {path: path.join(searchpath, match), name: match.slice(6), pkg: {}};
+    return arr.concat(glob.sync('{@*/,}slush-*', {cwd: searchpath, stat: true}).map(function (match) {
+      var generator = {path: path.join(searchpath, match), name: match.replace(/(?:@[\w]+[\/|\\]+)?slush-/, ""), pkg: {}};
       try {
         generator.pkg = require(path.join(searchpath, match, 'package.json'));
       } catch (e) {
