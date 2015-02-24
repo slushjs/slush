@@ -1,7 +1,7 @@
 {
   "name": "slush",
   "description": "The streaming scaffolding system - Gulp as a replacement for Yeoman",
-  "version": "1.0.1",
+  "version": "1.1.1",
   "homepage": "http://slushjs.github.io",
   "repository": "slushjs/slush",
   "author": "Joakim Bengtson <joakim@klei.se>",
