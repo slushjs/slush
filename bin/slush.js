@@ -177,25 +177,30 @@ function getModulesPaths () {
   if (process.env.NODE_ENV === 'test') {
     return [path.join(__dirname, '..', 'test')];
   }
+  var sep = (process.platform === 'win32') ? ';' : ':';
   var paths = [];
-  if (process.platform === 'win32') {
-    paths.push(path.join(process.env.APPDATA, 'npm', 'node_modules'));
+
+  if (process.env.NODE_PATH) {
+    paths = paths.concat(process.env.NODE_PATH.split(sep));
   } else {
-    paths.push('/usr/lib/node_modules');
+    if (process.platform === 'win32') {
+      paths.push(path.join(process.env.APPDATA, 'npm', 'node_modules'));
+    } else {
+      paths.push('/usr/lib/node_modules');
+    }
   }
+
   paths.push(path.join(__dirname, '..', '..'));
   paths.push.apply(paths, require.main.paths);
-  return paths.map(function(path){
-    return path.toLowerCase();
-  }).filter(function(path, index, all){
+  return paths.filter(function(path, index, all){
     return all.lastIndexOf(path) === index;
   });
 }
 
 function findGenerators (searchpaths) {
   return searchpaths.reduce(function (arr, searchpath) {
-    return arr.concat(glob.sync('slush-*', {cwd: searchpath, stat: true}).map(function (match) {
-      var generator = {path: path.join(searchpath, match), name: match.slice(6), pkg: {}};
+    return arr.concat(glob.sync('{@*/,}slush-*', {cwd: searchpath, stat: true}).map(function (match) {
+      var generator = {path: path.join(searchpath, match), name: match.replace(/(?:@[\w]+[\/|\\]+)?slush-/, ""), pkg: {}};
       try {
         generator.pkg = require(path.join(searchpath, match, 'package.json'));
       } catch (e) {
