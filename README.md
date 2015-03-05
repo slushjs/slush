@@ -131,9 +131,10 @@ gulp.task('default', function (done) {
       .pipe(conflict('./'))                    // Confirms overwrites on file conflicts
       .pipe(gulp.dest('./'))                   // Without __dirname here = relative to cwd
       .pipe(install())                         // Run `bower install` and/or `npm install` if necessary
-      .on('finish', function () {
+      .on('end', function () {
         done();                                // Finished!
-      });
+      })
+      .resume();
   });
 });
 ```
