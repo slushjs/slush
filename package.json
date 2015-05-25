@@ -45,10 +45,5 @@
   "engines": {
     "node": ">= 0.9"
   },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "https://raw.github.com/slushjs/slush/master/LICENSE"
-    }
-  ]
+  "license": "MIT"
 }
