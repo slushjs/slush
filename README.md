@@ -91,6 +91,7 @@ All `slush-*` packages should be installed globally (for now) to be found by the
    - add `slushgenerator` as package keyword
    - create a slushfile.js
    - Install `gulp` and used gulp plugins for your generator as ordinary dependencies
+* You can test your slush generator by running `slush .` in your slush generator's directory.
 
 ### Slush uses gulp
 

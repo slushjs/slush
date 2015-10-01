@@ -164,9 +164,25 @@ function logEvents(name, gulpInst) {
 }
 
 function getGenerator (name) {
+  if (name === '.') {
+    return getLocalGenerator();
+  }
   return getAllGenerators().filter(function (gen) {
     return gen.name === name;
   })[0];
+}
+
+function getLocalGenerator (name) {
+  var fullpath = proess.cwd();
+  var generator = {
+      path: fullpath, 
+      name: fullpath.split('/').pop().split('\\').pop(), 
+      pkg: {}
+      };
+      try {
+        generator.pkg = require(path.join(fullpath.cwd(), 'package.json'));
+      } catch (e) { }
+    return generator;
 }
 
 function getAllGenerators () {
