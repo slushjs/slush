@@ -173,7 +173,7 @@ function getGenerator (name) {
 }
 
 function getLocalGenerator (name) {
-  var fullpath = proess.cwd();
+  var fullpath = process.cwd();
   var generator = {
       path: fullpath, 
       name: fullpath.split('/').pop().split('\\').pop(), 
