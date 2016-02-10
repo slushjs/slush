@@ -84,13 +84,23 @@ All `slush-*` packages should be installed globally (for now) to be found by the
 
 ### Things to remember
 
+**When using Slush globally:**
+
 * Install `slush` globally
 * Install slush generators globally
-* When creating slush generators:
-   - name them `slush-<name>`
-   - add `slushgenerator` as package keyword
-   - create a slushfile.js
-   - Install `gulp` and used gulp plugins for your generator as ordinary dependencies
+
+**When using Slush locally:**
+
+* Install `slush` locally
+* Install slush generators locally
+* Preferably add `"slush": "slush"` to the `"scripts"` section in your `package.json` and run slush like so: `npm run slush` (see [@majgis comment](https://github.com/slushjs/slush/issues/5#issuecomment-170300026) for more info)
+
+**When creating slush generators:**
+
+* name them `slush-<name>`
+* add `slushgenerator` as package keyword
+* create a slushfile.js
+* Install `gulp` and used gulp plugins for your generator as ordinary dependencies
 
 ### Slush uses gulp
 
