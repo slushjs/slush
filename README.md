@@ -69,7 +69,7 @@ You'll then get the version for slush, the gulp version installed in the generat
 
 ### Find slush generators
 
-- <a href="http://slushjs.github.io/generators" target="_blank">sluch generators</a>
+- <a href="http://slushjs.github.io/generators" target="_blank">Slush Generators</a>
 
 
 ## Creating a generator
