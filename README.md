@@ -67,6 +67,11 @@ slush <generator> -v
 
 You'll then get the version for slush, the gulp version installed in the generator and the version number of the given generator.
 
+### Find slush generators
+
+- <a href="http://slushjs.github.io/generators" target="_blank">sluch generators</a>
+
+
 ## Creating a generator
 
 A Slush generator is an npm package following the naming convention `slush-*` and containing a `slushfile.js`.
