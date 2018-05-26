@@ -23,20 +23,20 @@
     "slush": "./bin/slush.js"
   },
   "dependencies": {
-    "glob": "~4.0.0",
-    "minimist": "~0.1.0",
+    "glob": "^7.1.2",
+    "minimist": "^1.2.0",
     "gulp-util": "^2.2.0",
-    "pretty-hrtime": "^0.2.0",
-    "archy": "^0.0.2",
+    "pretty-hrtime": "^1.0.3",
+    "archy": "^1.0.0",
     "liftoff": "~0.10.0",
-    "chalk": "^0.4.0"
+    "chalk": "^2.4.1"
   },
   "devDependencies": {
-    "mocha": "^1.17.0",
-    "should": "^3.1.0",
-    "jshint": "^2.4.1",
-    "gulp-jshint": "^1.4.0",
-    "gulp": "~3.6.2"
+    "mocha": "^5.2.0",
+    "should": "^13.2.1",
+    "jshint": "^2.9.5",
+    "gulp-jshint": "^2.1.0",
+    "gulp": "^4.0.0"
   },
   "scripts": {
     "test": "node gulpfile.js && NODE_ENV=test mocha --reporter spec"
