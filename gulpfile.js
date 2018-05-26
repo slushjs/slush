@@ -7,6 +7,10 @@ var jshint = require('gulp-jshint');
 
 var codeFiles = ['**/*.js', '!node_modules/**'];
 
+function taskSpec(tasks) {
+  return gulp.parallel ? gulp.parallel(tasks) : tasks;
+}
+
 gulp.task('lint', function() {
   log('Linting Files');
   return gulp.src(codeFiles)
@@ -16,7 +20,7 @@ gulp.task('lint', function() {
 
 gulp.task('watch', function() {
   log('Watching Files');
-  gulp.watch(codeFiles, ['lint']);
+  gulp.watch(codeFiles, taskSpec(['lint']));
 });
 
-gulp.task('default', ['lint', 'watch']);
+gulp.task('default', taskSpec(['lint', 'watch']));
