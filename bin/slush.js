@@ -16,6 +16,7 @@ var versionFlag = argv.v || argv.version;
 var params = argv._.slice();
 var generatorAndTasks = params.length ? params.shift().split(':') : [];
 var generatorName = generatorAndTasks.shift();
+var tasks = generatorAndTasks;
 
 if (!generatorName) {
   if (versionFlag) {
@@ -34,11 +35,6 @@ if (!generator) {
   process.exit(1);
 }
 
-// Setting cwd and slushfile dir:
-argv.cwd = process.cwd();
-argv.slushfile = path.join(generator.path, 'slushfile.js');
-argv._ = generatorAndTasks;
-
 var cli = new Liftoff({
   processTitle: 'slush',
   moduleName: 'gulp',
@@ -54,13 +50,14 @@ cli.on('requireFail', function(name) {
   gutil.log(chalk.red('Failed to load external module'), chalk.magenta(name));
 });
 
-cli.launch(handleArguments, argv);
+cli.launch({
+  // Setting cwd and slushfile dir:
+  cwd: process.cwd(),
+  configPath: path.join(generator.path, 'slushfile.js')
+}, handleArguments);
 
 function handleArguments(env) {
-
-  var argv = env.argv;
   var tasksFlag = argv.T || argv.tasks;
-  var tasks = argv._;
   var toRun = tasks.length ? tasks : ['default'];
   var args = params;
 

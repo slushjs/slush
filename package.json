@@ -28,7 +28,7 @@
     "gulp-util": "^2.2.0",
     "pretty-hrtime": "^1.0.3",
     "archy": "^1.0.0",
-    "liftoff": "~0.10.0",
+    "liftoff": "^2.5.0",
     "chalk": "^2.4.1"
   },
   "devDependencies": {
