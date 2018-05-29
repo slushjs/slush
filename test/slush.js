@@ -39,6 +39,19 @@ describe('slush', function () {
     }, done);
   });
 
+  it('should run multiple tasks in generator', function (done) {
+    runSlush(['test:app:default'], function(code, data) {
+      code.should.equal(0);
+      data.should.match(/ Starting 'test:app'\.\.\./);
+      data.should.match(/\napp\n/);
+      data.should.match(/ Finished 'test:app' after /);
+      data.should.match(/ Starting 'test:default'\.\.\./);
+      data.should.match(/\ndefault\n/);
+      data.should.match(/ Finished 'test:default' after /);
+      data.should.match(/Scaffolding done/);
+    }, done);
+  });
+
   it('should run provided task with arguments in generator', function (done) {
     runSlush(['test:app', 'arg1', 'arg2'], function(code, data) {
       code.should.match(0);
@@ -46,6 +59,16 @@ describe('slush', function () {
       data.should.match(/\napp \(arg1, arg2\)\n/);
       data.should.match(/ Finished 'test:app' after /);
       data.should.match(/Scaffolding done/);
+    }, done);
+  });
+
+  it('should fail when a task fails in generator', function (done) {
+    runSlush(['test:app', 'fail'], function(code, data) {
+      code.should.match(1);
+      data.should.match(/ Starting 'test:app'\.\.\./);
+      data.should.match(/\napp \(fail\)\n/);
+      data.should.match(/ 'test:app' errored after .* forced error\n/);
+      data.should.not.match(/Scaffolding done/);
     }, done);
   });
 
