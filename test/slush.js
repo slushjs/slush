@@ -54,7 +54,7 @@ describe('slush', function () {
 
   it('should run provided task with arguments in generator', function (done) {
     runSlush(['test:app', 'arg1', 'arg2'], function(code, data) {
-      code.should.match(0);
+      code.should.equal(0);
       data.should.match(/ Starting 'test:app'\.\.\./);
       data.should.match(/\napp \(arg1, arg2\)\n/);
       data.should.match(/ Finished 'test:app' after /);
@@ -64,7 +64,7 @@ describe('slush', function () {
 
   it('should fail when a task fails in generator', function (done) {
     runSlush(['test:app', 'fail'], function(code, data) {
-      code.should.match(1);
+      code.should.equal(1);
       data.should.match(/ Starting 'test:app'\.\.\./);
       data.should.match(/\napp \(fail\)\n/);
       data.should.match(/ 'test:app' errored after .* forced error\n/);
@@ -74,7 +74,7 @@ describe('slush', function () {
 
   it('should fail when running a non-existing task in a generator', function (done) {
     runSlush(['test:noexist'], function(code, data) {
-      code.should.match(1);
+      code.should.equal(1);
       data.should.match(/\[slush\] Task 'noexist' was not defined in `slush-test`/);
       data.should.not.match(/Scaffolding done/);
     }, done);
@@ -82,7 +82,7 @@ describe('slush', function () {
 
   it('should fail when running a generator without slushfile', function (done) {
     runSlush(['bad'], function(code, data) {
-      code.should.match(1);
+      code.should.equal(1);
       data.should.match(/\[slush\] No slushfile found/);
       data.should.match(/\[slush\].+issue with.+`slush-bad`/);
     }, done);
@@ -90,7 +90,7 @@ describe('slush', function () {
 
   it('should fail trying to run a non-existing generator', function (done) {
     runSlush(['noexist'], function(code, data) {
-      code.should.match(1);
+      code.should.equal(1);
       data.should.match(/\[slush\] No generator by name: "noexist" was found/);
     }, done);
   });

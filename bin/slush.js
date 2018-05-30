@@ -109,7 +109,7 @@ function handleArguments(env) {
 
 // For Gulp 4, we have to bind gulpInst to task functions individually. We
 // trigger our own `task_not_found` and `finished` events to maintain the same
-// Slush interface between Slush versions (rather than relying on the default
+// Slush interface between Gulp versions (rather than relying on the default
 // Gulp 4 behavior).
 function runGulpV4Tasks(gulpInst, toRun) {
   toRun.forEach(function(task) {
