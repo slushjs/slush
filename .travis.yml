@@ -1,4 +1,8 @@
 language: node_js
 node_js:
-  - "0.10"
-  - "0.11"
+  - "node"
+  - "lts/*"
+script:
+  - "node_modules/.bin/gulp lint"
+  - "npm test"
+  - "printf 'Finished testing with Gulp v4; now testing with Gulp v3\n' && npm install gulp@3 && npm test"

@@ -16,6 +16,7 @@ var versionFlag = argv.v || argv.version;
 var params = argv._.slice();
 var generatorAndTasks = params.length ? params.shift().split(':') : [];
 var generatorName = generatorAndTasks.shift();
+var tasks = generatorAndTasks;
 
 if (!generatorName) {
   if (versionFlag) {
@@ -34,11 +35,6 @@ if (!generator) {
   process.exit(1);
 }
 
-// Setting cwd and slushfile dir:
-argv.cwd = process.cwd();
-argv.slushfile = path.join(generator.path, 'slushfile.js');
-argv._ = generatorAndTasks;
-
 var cli = new Liftoff({
   processTitle: 'slush',
   moduleName: 'gulp',
@@ -54,13 +50,14 @@ cli.on('requireFail', function(name) {
   gutil.log(chalk.red('Failed to load external module'), chalk.magenta(name));
 });
 
-cli.launch(handleArguments, argv);
+cli.launch({
+  // Setting cwd and slushfile dir:
+  cwd: process.cwd(),
+  configPath: path.join(generator.path, 'slushfile.js')
+}, handleArguments);
 
 function handleArguments(env) {
-
-  var argv = env.argv;
   var tasksFlag = argv.T || argv.tasks;
-  var tasks = argv._;
   var toRun = tasks.length ? tasks : ['default'];
   var args = params;
 
@@ -102,8 +99,31 @@ function handleArguments(env) {
   process.nextTick(function() {
     if (tasksFlag) {
       return logTasks(generator.name, gulpInst);
+    } else if (gulpInst.start) {
+      // Gulp <= 3.9.1 (gulp.start() is unsupported and breaks under Node 10)
+      return gulpInst.start.apply(gulpInst, toRun);
     }
-    gulpInst.start.apply(gulpInst, toRun);
+    runGulpV4Tasks(gulpInst, toRun);
+  });
+}
+
+// For Gulp 4, we have to bind gulpInst to task functions individually. We
+// trigger our own `task_not_found` and `finished` events to maintain the same
+// Slush interface between Gulp versions (rather than relying on the default
+// Gulp 4 behavior).
+function runGulpV4Tasks(gulpInst, toRun) {
+  toRun.forEach(function(task) {
+    var gulpTask = gulpInst.task(task);
+    if (gulpTask === undefined) {
+      gulpInst.emit('task_not_found', { task: task });
+    }
+    gulpInst.task(task, gulpTask.bind(gulpInst));
+  });
+  gulpInst.parallel(toRun)(function(err) {
+    if (err) {
+      process.exit(1);
+    }
+    gulpInst.emit('finished');
   });
 }
 
@@ -121,7 +141,8 @@ function logGenerators(generators) {
 }
 
 function logTasks(name, localGulp) {
-  var tree = taskTree(localGulp.tasks);
+  // Gulp <= 3.9.1 uses gulp.tasks; Gulp >= 4.0.0 uses gulp.tree().
+  var tree = localGulp.tasks ? taskTree(localGulp.tasks) : localGulp.tree();
   tree.label = 'Tasks for generator ' + chalk.magenta(name);
   archy(tree).split('\n').forEach(function(v) {
     if (v.trim().length === 0) return;
@@ -131,26 +152,28 @@ function logTasks(name, localGulp) {
 
 // format orchestrator errors
 function formatError(e) {
-  if (!e.err) return e.message;
-  if (e.err.message) return e.err.message;
-  return JSON.stringify(e.err);
+  var err = e.err || e.error;
+  if (!err) return e.message;
+  if (err.message) return err.message;
+  return JSON.stringify(err);
 }
 
 // wire up logging events
 function logEvents(name, gulpInst) {
-  gulpInst.on('task_start', function(e) {
-    gutil.log('Starting', "'" + chalk.cyan(name + ':' + e.task) + "'...");
+  var names = getEventNames(gulpInst);
+
+  gulpInst.on(names.task_start, function(e) {
+    gutil.log('Starting', "'" + chalk.cyan(name + ':' + taskName(e)) + "'...");
   });
 
-  gulpInst.on('task_stop', function(e) {
-    var time = prettyTime(e.hrDuration);
-    gutil.log('Finished', "'" + chalk.cyan(name + ':' + e.task) + "'", 'after', chalk.magenta(time));
+  gulpInst.on(names.task_stop, function(e) {
+    gutil.log('Finished', "'" + chalk.cyan(name + ':' + taskName(e)) + "'", 'after', chalk.magenta(taskDuration(e)));
   });
 
-  gulpInst.on('task_err', function(e) {
+  gulpInst.on(names.task_error, function(e) {
+    console.error('ERR', e);
     var msg = formatError(e);
-    var time = prettyTime(e.hrDuration);
-    gutil.log("'" + chalk.cyan(name + ':' + e.task) + "'", 'errored after', chalk.magenta(time), chalk.red(msg));
+    gutil.log("'" + chalk.cyan(name + ':' + taskName(e)) + "'", 'errored after', chalk.magenta(taskDuration(e)), chalk.red(msg));
   });
 
   gulpInst.on('task_not_found', function(err) {
@@ -158,9 +181,36 @@ function logEvents(name, gulpInst) {
     process.exit(1);
   });
 
-  gulpInst.on('stop', function () {
+  gulpInst.on(names.finished, function () {
     log('Scaffolding done');
   });
+}
+
+function taskName(event) {
+  return event.task || event.name;
+}
+
+function taskDuration(event) {
+  return prettyTime(event.hrDuration || event.duration);
+}
+
+function getEventNames(gulpInst) {
+  if (gulpInst.tasks) {
+    // Gulp v3.9.1 and earlier
+    return {
+      task_start: 'task_start',
+      task_stop: 'task_stop',
+      task_error: 'task_err',
+      finished: 'stop'
+    };
+  }
+  // Gulp v4.0.0 and later
+  return {
+    task_start: 'start',
+    task_stop: 'stop',
+    task_error: 'error',
+    finished: 'finished'
+  };
 }
 
 function getGenerator (name) {
