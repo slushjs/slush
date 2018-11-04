@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 'use strict';
-var gutil = require('gulp-util');
+var fancyLog = require('fancy-log');
 var prettyTime = require('pretty-hrtime');
 var glob = require('glob');
 var path = require('path');
@@ -47,11 +47,11 @@ var cli = new Liftoff({
 });
 
 cli.on('require', function(name) {
-  gutil.log('Requiring external module', chalk.magenta(name));
+  fancyLog('Requiring external module', chalk.magenta(name));
 });
 
 cli.on('requireFail', function(name) {
-  gutil.log(chalk.red('Failed to load external module'), chalk.magenta(name));
+  fancyLog(chalk.red('Failed to load external module'), chalk.magenta(name));
 });
 
 cli.launch(handleArguments, argv);
@@ -67,7 +67,7 @@ function handleArguments(env) {
   if (versionFlag) {
     log(slushPackage.version);
     if (env.modulePackage) {
-      gutil.log(env.modulePackage.version);
+      fancyLog(env.modulePackage.version);
     }
     if (generator.pkg.version) {
       console.log('[' + chalk.green('slush-' + generator.name) + '] ' + generator.pkg.version);
@@ -76,7 +76,7 @@ function handleArguments(env) {
   }
 
   if (!env.modulePath) {
-    gutil.log(chalk.red('No local gulp install found in'), chalk.magenta(generator.path));
+    fancyLog(chalk.red('No local gulp install found in'), chalk.magenta(generator.path));
     log(chalk.red('This is an issue with the `slush-' + generator.name + '` generator'));
     process.exit(1);
   }
@@ -96,7 +96,7 @@ function handleArguments(env) {
 
   if (process.cwd() !== env.cwd) {
     process.chdir(env.cwd);
-    gutil.log('Working directory changed to', chalk.magenta(env.cwd));
+    fancyLog('Working directory changed to', chalk.magenta(env.cwd));
   }
 
   process.nextTick(function() {
@@ -125,7 +125,7 @@ function logTasks(name, localGulp) {
   tree.label = 'Tasks for generator ' + chalk.magenta(name);
   archy(tree).split('\n').forEach(function(v) {
     if (v.trim().length === 0) return;
-    gutil.log(v);
+    fancyLog(v);
   });
 }
 
@@ -139,18 +139,18 @@ function formatError(e) {
 // wire up logging events
 function logEvents(name, gulpInst) {
   gulpInst.on('task_start', function(e) {
-    gutil.log('Starting', "'" + chalk.cyan(name + ':' + e.task) + "'...");
+    fancyLog('Starting', "'" + chalk.cyan(name + ':' + e.task) + "'...");
   });
 
   gulpInst.on('task_stop', function(e) {
     var time = prettyTime(e.hrDuration);
-    gutil.log('Finished', "'" + chalk.cyan(name + ':' + e.task) + "'", 'after', chalk.magenta(time));
+    fancyLog('Finished', "'" + chalk.cyan(name + ':' + e.task) + "'", 'after', chalk.magenta(time));
   });
 
   gulpInst.on('task_err', function(e) {
     var msg = formatError(e);
     var time = prettyTime(e.hrDuration);
-    gutil.log("'" + chalk.cyan(name + ':' + e.task) + "'", 'errored after', chalk.magenta(time), chalk.red(msg));
+    fancyLog("'" + chalk.cyan(name + ':' + e.task) + "'", 'errored after', chalk.magenta(time), chalk.red(msg));
   });
 
   gulpInst.on('task_not_found', function(err) {
